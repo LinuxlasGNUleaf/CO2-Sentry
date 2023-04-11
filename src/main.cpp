@@ -2,30 +2,56 @@
 
 DHT dht(DHTPIN, DHTTYPE);
 Adafruit_CCS811 ccs;
+RTC_DS3231 rtc;
 
 unsigned long last_dht_read = 0;
 unsigned long last_ccs811_read = 0;
+unsigned long last_rtc_read = 0;
 
-void setup() {
+void setup()
+{
+  pinMode(LED_G, OUTPUT);
+  pinMode(LED_Y, OUTPUT);
+  pinMode(LED_R, OUTPUT);
+
+  digitalWrite(LED_G, LOW);
+  digitalWrite(LED_Y, LOW);
+  digitalWrite(LED_R, LOW);
+
+  while (!Serial)
+    ;
+  delay(3000);
   Serial.begin(9600);
   Serial.println(F("DHTxx test!"));
-  
+
+  if (!rtc.begin())
+  {
+    Serial.println("Failed to start RTC module! Please check your wiring.");
+    while (1)
+      ;
+  }
+  rtc.disable32K();
+  Serial.println(rtc.lostPower());
+
   dht.begin();
 
   if (!ccs.begin())
   {
-    Serial.println("Failed to start sensor! Please check your wiring.");
+    Serial.println("Failed to start CCS module! Please check your wiring.");
     while (1)
       ;
   }
 }
 
-void loop() {
+void loop()
+{
   readDHT();
   readCCS811();
+  printTime();
 }
 
-void readDHT(){
+void readDHT()
+{
   if (millis() - last_dht_read < DHT_INTERVAL)
     return;
   last_dht_read = millis();
@@ -36,7 +62,8 @@ void readDHT(){
   float t = dht.readTemperature();
 
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t)) {
+  if (isnan(h) || isnan(t))
+  {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
@@ -48,7 +75,8 @@ void readDHT(){
   Serial.println(F("°C "));
 }
 
-void readCCS811(){
+void readCCS811()
+{
   if (millis() - last_ccs811_read < CCS811_INTERVAL)
     return;
   last_ccs811_read = millis();
@@ -66,7 +94,54 @@ void readCCS811(){
     else
     {
       Serial.println("ERROR!");
-      while (1);
+      while (1)
+        ;
     }
   }
+}
+
+void printTime()
+{
+  if (millis() - last_rtc_read < RTC_INTERVAL)
+    return;
+  last_rtc_read = millis();
+
+  DateTime now = rtc.now();
+  
+  // Day of the week
+  Serial.print("Day of the week: ");
+  Serial.print(now.dayOfTheWeek());
+  Serial.println();
+
+  Serial.print("Current Time: ");
+  if (now.hour() < 10)
+  {
+    Serial.print("0");
+    Serial.print(now.hour());
+  }
+  else
+  {
+    Serial.print(now.hour(), DEC);
+  }
+  Serial.print(':');
+  if (now.minute() < 10)
+  {
+    Serial.print("0");
+    Serial.print(now.minute());
+  }
+  else
+  {
+    Serial.print(now.minute(), DEC);
+  }
+  Serial.print(':');
+  if (now.second() < 10)
+  {
+    Serial.print("0");
+    Serial.print(now.second());
+  }
+  else
+  {
+    Serial.print(now.second(), DEC);
+  }
+  Serial.println();
 }
