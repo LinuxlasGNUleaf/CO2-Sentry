@@ -10,9 +10,16 @@ unsigned long last_led_change = 0;
 bool led_state = false;
 bool ss_pin_state = false;
 
+
+// sensor state values
+float current_temperature = 0;
+float current_humidity = 0;
+uint16_t current_co2 = 0;
+uint16_t current_tvoc = 0;
+
 void setup()
 {
-  WDT_FEED();
+  ESP.wdtFeed();
   // LED SETUP
   pinMode(LED_G, OUTPUT);
   pinMode(LED_Y, OUTPUT);
@@ -49,12 +56,6 @@ void setup()
       ;
   }
 }
-
-// current values
-float current_temperature = 0;
-float current_humidity = 0;
-uint16_t current_co2 = 0;
-uint16_t current_tvoc = 0;
 
 void loop()
 {
@@ -132,7 +133,7 @@ void handleLEDs()
     return;
   if (current_co2 < good_co2_threshold)
     analogWrite(LED_G, 10);
-  else if (current_co2 > good_co2_threshold && (current_co2 < medium_co2_threshold))
+  else if ((current_co2 > good_co2_threshold) && (current_co2 < medium_co2_threshold))
   {
     analogWrite(LED_Y, 10);
     ss_pin_state = true;
