@@ -51,9 +51,10 @@ void setup()
     delay(1000);
     ESP.restart();
   }
-  while(!ccs.available()){
+  while (!ccs.available())
+  {
     Serial.print('.');
-    delay(200);
+    delay(250);
   }
   Serial.println("done.");
 
@@ -65,7 +66,7 @@ void setup()
   digitalWrite(LED_Y, LOW);
   digitalWrite(LED_R, LOW);
 
-  last_rtc_ts = rtc.now().unixtime();
+  last_rtc_ts = rtc.now().unixtime() + poll_initial_wait;
   CONT_WDT;
 }
 

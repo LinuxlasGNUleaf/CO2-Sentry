@@ -16,7 +16,7 @@
 #define RESET 'R'
 
 // times in seconds
-const unsigned long initial_poll = 10;
+const unsigned long poll_initial_wait = 10;
 const unsigned long poll_interval = 5;
 
 // times in milliseconds
