@@ -12,7 +12,9 @@
 #include <Esp.h>
 #include "SdFat.h"
 #include "sdios.h"
+
 #include "config.h"
+#include "utils.h"
 
 // OBJECTS
 DHT dht(DHTPIN, DHTTYPE);
@@ -25,7 +27,7 @@ void readDHT(float *temperature, float *humidity);
 void readCCS811(uint16_t *co2, uint16_t *tvoc);
 bool pollScheduled();
 void handleLEDs();
-void writeLineToSDCard(char* line);
+void writeBufferToSD();
 void checkForIncoming();
 
 #endif

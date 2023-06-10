@@ -12,7 +12,7 @@ while not found:
     char_i = (char_i+1)%4
     ser.write(b"P")
     time.sleep(1)
-    if (ser.in_waiting == 3 and ser.read(1).decode() == 'P'):
+    if (ser.in_waiting and ser.read(1).decode() == 'P'):
         print("\rPinging device...found.")
         found = True
 
