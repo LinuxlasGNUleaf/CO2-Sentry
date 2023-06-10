@@ -20,7 +20,7 @@ const unsigned long initial_poll = 10;
 const unsigned long poll_interval = 5;
 
 // times in milliseconds
-const unsigned long i2c_cooldown = 1000;
+const unsigned long i2c_cooldown = 100;
 const unsigned long led_on_interval = .1e3;
 const unsigned long led_off_interval = 1e3;
 

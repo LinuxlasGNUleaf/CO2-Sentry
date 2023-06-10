@@ -64,6 +64,8 @@ void setup()
   digitalWrite(LED_G, LOW);
   digitalWrite(LED_Y, LOW);
   digitalWrite(LED_R, LOW);
+
+  last_rtc_ts = rtc.now().unixtime();
   CONT_WDT;
 }
 
@@ -102,9 +104,9 @@ bool pollScheduled()
   last_i2c_call = millis();
   current_rtc = rtc.now();
 
-  if (current_rtc.unixtime() - last_rtc_ts > poll_interval)
+  if (current_rtc.unixtime() - last_rtc_ts >= poll_interval)
   {
-    last_rtc_ts = current_rtc.unixtime();
+    last_rtc_ts += poll_interval;
     return true;
   }
   return false;
