@@ -16,8 +16,8 @@
 #define RESET 'R'
 
 // times in seconds
-const unsigned long poll_initial_wait = 10;
-const unsigned long poll_interval = 5;
+const unsigned long poll_initial_wait = 30;
+const unsigned long poll_interval = 10;
 
 // times in milliseconds
 const unsigned long i2c_cooldown = 100;
@@ -28,9 +28,8 @@ const unsigned long led_off_interval = 1e3;
 const unsigned int good_co2_threshold = 600;
 const unsigned int medium_co2_threshold = 800;
 
-
 // buffer options
-const unsigned int sd_buffer_size = 50;
+const unsigned int sd_buffer_size = 6;
 const unsigned int sd_buffer_warn_time = 1500;
 
 #define DATA_STRING "%010d, %05.2lf, %06.2lf, %04d, %03d"
