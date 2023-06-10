@@ -26,7 +26,7 @@ void setup()
   if (!sd.begin(D8, SD_SCK_MHZ(5)))
   {
     Serial.println("failed.\nCheck wiring and presence of SD card.");
-    delay(500);
+    delay(1000);
     ESP.restart();
   }
   Serial.println("done.");
@@ -48,10 +48,13 @@ void setup()
   if (!ccs.begin())
   {
     Serial.println(F("failed.\nPlease check your wiring."));
-    delay(500);
+    delay(1000);
     ESP.restart();
   }
-  ccs.readData();
+  while(!ccs.available()){
+    Serial.print('.');
+    delay(200);
+  }
   Serial.println("done.");
 
   // LED SETUP
@@ -69,6 +72,7 @@ void loop()
   if (pollScheduled())
   {
     // update values
+    Serial.print('#');
     ESP.wdtFeed();
     readDHT(&current_data.temp, &current_data.hmdty);
     ESP.wdtFeed();
@@ -106,17 +110,19 @@ bool pollScheduled()
   return false;
 }
 
-void readDHT(float *temperature, float *humidity)
+void readDHT(float *temp, float *hmdty)
 {
-  *temperature = dht.readTemperature();
-  *humidity = dht.readHumidity();
+  float new_temp = dht.readTemperature();
+  float new_hmdty = dht.readHumidity();
 
   // Check if any reads failed and exit early (to try again).
-  if (isnan(*temperature) || isnan(*humidity))
+  if (isnan(new_temp) || isnan(new_hmdty))
   {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
+  *temp = new_temp;
+  *hmdty = new_hmdty;
 }
 
 void readCCS811(uint16_t *co2, uint16_t *tvoc)
